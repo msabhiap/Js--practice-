@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <div class="calculator-card">
+    <h2>Emi calculator</h2>
+            <div class="input-group">
+            <label for="principal">Loan Amount</label>
+            <input type="number" id="principal" placeholder="e.g. 100000">
+        </div>
+          <div class="input-group">
+            <label for="interest">Interest Rate (%)</label>
+            <input type="number" step="0.1" id="interest" placeholder="e.g. 10.5">
+        </div>
+        <div class="input-group">
+            <label for="tenure">Tenure (Months)</label>
+            <input type="number" id="tenure" placeholder="e.g. 12">
+        </div>
+<button onclick="calculateEmI()">Calculate</button>
+        
+        <div class="result" id="result-box">
+            <h3>Monthly EMI</h3>
+            <div class="emi-value" id="emi-output">0</div>
+        </div>
+    
+   </div>
+   <script>
+    //jsLOgic
+    function calculateEmI(){
+      const P= parseFloat (document.getElementById('principal').value);
+      const annualRate=  parseFloat(document.getElementById('interest').value);
+      const t= parseFloat (document.getElementById('tenure').value);
+      
+      if(isNaN(P)||isNaN(annualRate)||isNaN(t)||P<=0||t<=0){
+          alert("please enter a valid number in all fields")
+    return;
+      }
+        // Monthly interst Rate(r)
+ const r = (annualRate / 12) / 100;    
+    // Emi Formula
+          
+    const numerator= Math.pow(1+r,t)
+   const emi= P*r*(numerator/(numerator-1))
+
+   //Display Result
+//    emi.innerHTML=`<span>${emi}</span>`
+   document.getElementById('emi-output').innerText=emi.toLocaleString(undefined,{
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+   });
+   document.getElementById('result-box').style.display = 'block';
+    }
+
+   </script>
+   
+</body>
+</html>

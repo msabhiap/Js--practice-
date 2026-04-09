@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="background-color: black;color: red;" >
+<ul class="language">
+    <li>javascript</li>
+</ul>
+
+</body>
+<script>
+    function addLanguage(lan){
+       const li= document.createElement('li');
+       li.innerHtml=`${lan}`
+       document.querySelector('.language').appendChild(li)
+
+    }
+    addLanguage("python")
+
+    function addOptimization(language){
+       const li= document.createElement('li')
+       li.appendChild(document.createTextNode(language))
+       document.querySelector('.language').appendChild(li)
+    }
+    addOptimization("golan")
+//    const parents= document.querySelector('.parent')
+//    console.log(parents);
+//    console.log(parents.children[1].innerHTML);
+   
+//    for(let i=0;i<parents.children.length;i++){
+//     console.log (parents.children[i].innerHTML);
+//    }
+//    parents.children[1].style.color="orange"
+//    console.log(parents.firstElementChild);
+   
+</script>
+</html>

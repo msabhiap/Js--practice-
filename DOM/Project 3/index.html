@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMI Calculator</title>
+    <style>
+        /* CSS: Styling the interface */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .calculator-card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { color: #2d3436; margin-bottom: 1.5rem; text-align: center; }
+        .input-group { margin-bottom: 1.2rem; }
+        label { display: block; margin-bottom: 0.5rem; color: #636e72; font-weight: 600; }
+        input { width: 100%; padding: 12px; border: 1px solid #dfe6e9; border-radius: 6px; box-sizing: border-box; font-size: 1rem; transition: border-color 0.3s; }
+        input:focus { border-color: #00b894; outline: none; }
+        button { width: 100%; padding: 12px; background-color: #00b894; color: white; border: none; border-radius: 6px; font-size: 1.1rem; cursor: pointer; transition: background 0.3s; margin-top: 1rem; }
+        button:hover { background-color: #00a183; }
+        .result { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #eee; text-align: center; display: none; }
+        .result h3 { color: #2d3436; margin: 0; }
+        .emi-value { font-size: 1.8rem; color: #00b894; font-weight: bold; margin-top: 0.5rem; }
+    </style>
+</head>
+<body>
+
+    <div class="calculator-card">
+        <h2>EMI Calculator</h2>
+        
+        <div class="input-group">
+            <label for="principal">Loan Amount</label>
+            <input type="number" id="principal" placeholder="e.g. 100000">
+        </div>
+
+        <div class="input-group">
+            <label for="interest">Interest Rate (%)</label>
+            <input type="number" step="0.1" id="interest" placeholder="e.g. 10.5">
+        </div>
+
+        <div class="input-group">
+            <label for="tenure">Tenure (Months)</label>
+            <input type="number" id="tenure" placeholder="e.g. 12">
+        </div>
+
+        <button onclick="calculateEMI()">Calculate</button>
+
+        <div class="result" id="result-box">
+            <h3>Monthly EMI</h3>
+            <div class="emi-value" id="emi-output">0</div>
+        </div>
+    </div>
+
+    <script>
+        // JS: Logic and Calculation
+        function calculateEMI() {
+            const P = parseFloat(document.getElementById('principal').value);
+            const annualRate = parseFloat(document.getElementById('interest').value);
+            const n = parseFloat(document.getElementById('tenure').value);
+            
+            if (isNaN(P) || isNaN(annualRate) || isNaN(n) || P <= 0 || n <= 0) {
+                alert("Please enter valid positive numbers in all fields.");
+                return;
+            }
+
+            // Monthly interest rate (r)
+            const r = (annualRate / 12) / 100;
+
+            // EMI Formula: P * r * (1+r)^n / ((1+r)^n - 1)
+            const numerator = Math.pow(1 + r, n);
+            const emi = P * r * (numerator / (numerator - 1));
+
+            // Display results
+            document.getElementById('emi-output').innerText = emi.toLocaleString(undefined,{
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            document.getElementById('result-box').style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>

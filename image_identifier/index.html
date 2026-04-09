@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Object Detection</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; }
+        .container { position: relative; width: 640px; height: 480px; }
+        video, canvas { position: absolute; left: 0; top: 0; border-radius: 8px; }
+        #status { margin: 10px; color: #666; }
+    </style>
+</head>
+<body>
+
+    <h1>AI Object Detector</h1>
+    <p id="status">Loading Model...</p>
+
+    <div class="container">
+        <video id="webcam" autoplay muted width="640" height="480"></video>
+        <canvas id="overlay" width="640" height="480"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+
+    <script>
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('overlay');
+        const ctx = canvas.getContext('2d');
+        const status = document.getElementById('status');
+
+        let model = undefined;
+
+        // 1. Access the Webcam
+        async function setupWebcam() {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { width: 640, height: 480 }, 
+                audio: false 
+            });
+            video.srcObject = stream;
+            return new Promise((resolve) => {
+                video.onloadedmetadata = () => resolve(video);
+            });
+        }
+
+        // 2. Run Prediction Loop
+        async function predict() {
+            // Detect objects in the video frame
+            const predictions = await model.detect(video);
+            
+            // Clear previous drawings
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw bounding boxes
+            predictions.forEach(prediction => {
+                const [x, y, width, height] = prediction.bbox;
+                
+                // Style the box
+                ctx.strokeStyle = '#00FF00';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(x, y, width, height);
+
+                // Label
+                ctx.fillStyle = '#00FF00';
+                ctx.font = '18px Arial';
+                ctx.fillText(
+                    `${prediction.class} (${Math.round(pre`diction.score * 100)}%)`, 
+                    x, y > 10 ? y - 5 : 10
+                );
+            });
+
+            // Keep the loop going
+            window.requestAnimationFrame(predict);
+        }
+
+        // 3. Initialize
+        async function init() {
+            try {
+                model = await cocoSsd.load();
+                status.innerText = "Model Loaded! Point webcam at objects.";
+                await setupWebcam();
+                predict();
+            } catch (err) {
+                status.innerText = "Error: " + err.message;
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
